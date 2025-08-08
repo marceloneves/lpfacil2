@@ -1,258 +1,182 @@
-# LPFácil2 - Plataforma SaaS para Criação de Landing Pages
+# 🚀 LPFácil2 - Plataforma SaaS para Landing Pages
 
-Plataforma moderna e elegante para criação de landing pages profissionais, construída com Next.js 15, TypeScript, Tailwind CSS e Google Cloud Firestore.
+Uma plataforma completa e moderna para criação de landing pages profissionais, construída com Next.js 15, TypeScript, Tailwind CSS e Firebase.
 
-## 🚀 Tecnologias Utilizadas
+## ✨ Funcionalidades
 
-- **Frontend**: Next.js 15 com App Router
-- **Backend**: API Routes do Next.js
-- **Banco de Dados**: Google Cloud Firestore
-- **Estilização**: Tailwind CSS
-- **Linguagem**: TypeScript
-- **Linting**: ESLint + Prettier
+### 🎨 **Sistema de Templates**
+- 8 templates diferentes (Vendas, Leads, Lançamentos, etc.)
+- Filtros por categoria e busca
+- Preview de templates com recursos
+- Design responsivo e moderno
 
-## 📋 Pré-requisitos
+### 🔐 **Sistema Multi-Tenant**
+- Autenticação completa de usuários
+- Isolamento de dados por usuário
+- Sessões seguras com cookies HTTP-only
+- Proteção contra acesso não autorizado
 
-- Node.js 18+ 
-- npm ou yarn
-- Conta no Google Cloud Platform
-- Projeto Firebase configurado
+### 📊 **Dashboard Intuitivo**
+- Visão geral das landing pages
+- Estatísticas de visualizações e conversões
+- Ações completas (Editar, Visualizar, Excluir)
+- Interface moderna e responsiva
 
-## 🔧 Configuração
+### ✏️ **Editor de Landing Pages**
+- Modo de criação e edição
+- Configuração de título e template
+- Preview do template selecionado
+- Integração completa com Firebase
 
-### 1. Clone e Instale as Dependências
+### 🛡️ **Segurança**
+- Sistema multi-tenant completo
+- Verificação de propriedade em todas as operações
+- Middleware de autenticação centralizado
+- Proteção contra CSRF e ataques
 
+## 🛠️ Tecnologias
+
+- **Frontend**: Next.js 15, React 18, TypeScript
+- **Styling**: Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: Firebase Firestore
+- **Authentication**: Firebase Auth + Custom Sessions
+- **Deployment**: Vercel-ready
+
+## 🚀 Como Executar
+
+### 1. Clone o repositório
 ```bash
-git clone <seu-repositorio>
+git clone https://github.com/seu-usuario/lpfacil2.git
 cd lpfacil2
+```
+
+### 2. Instale as dependências
+```bash
 npm install
 ```
 
-### 2. Configuração do Firebase
+### 3. Configure o Firebase
+Siga o guia completo em [`FIREBASE_SETUP.md`](./FIREBASE_SETUP.md)
 
-1. Acesse o [Google Cloud Console](https://console.cloud.google.com/)
-2. Crie um novo projeto ou use um existente
-3. Ative o Firestore Database:
-   - Vá para "Firestore Database" no menu lateral
-   - Clique em "Criar banco de dados"
-   - Escolha "Iniciar no modo de teste" (para desenvolvimento)
-   - Selecione a localização mais próxima
-4. Configure a Service Account:
-   - Vá para "IAM & Admin" > "Service Accounts"
-   - Clique em "Criar conta de serviço"
-   - Dê um nome como "firebase-admin"
-   - Adicione a role "Firebase Admin" ou "Cloud Datastore User"
-   - Clique em "Criar e continuar"
-   - Clique em "Concluído"
-5. Baixe a chave da Service Account:
-   - Na lista de Service Accounts, clique nos três pontos da conta criada
-   - Selecione "Gerenciar chaves"
-   - Clique em "Adicionar chave" > "Criar nova chave"
-   - Escolha "JSON" e clique em "Criar"
-   - O arquivo será baixado automaticamente
-
-### 3. Configuração das Variáveis de Ambiente
-
-1. Copie o arquivo `env.example` para `.env.local`:
+### 4. Configure as variáveis de ambiente
 ```bash
 cp env.example .env.local
 ```
 
-2. Edite o arquivo `.env.local` com suas credenciais do Firebase:
-
+Edite o arquivo `.env.local` com suas credenciais do Firebase:
 ```env
-# Firebase Configuration
 FIREBASE_PROJECT_ID=seu-projeto-id
-FIREBASE_CLIENT_EMAIL=seu-service-account@seu-projeto.iam.gserviceaccount.com
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nSua chave privada aqui\n-----END PRIVATE KEY-----\n"
-
-# Next.js Configuration
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=sua-chave-secreta-aqui
+FIREBASE_CLIENT_EMAIL=seu-client-email
+FIREBASE_PRIVATE_KEY="sua-private-key"
 ```
 
-**Importante**: 
-- Substitua `seu-projeto-id` pelo ID do seu projeto Firebase
-- Substitua `seu-service-account@seu-projeto.iam.gserviceaccount.com` pelo email da sua Service Account
-- Substitua `Sua chave privada aqui` pela chave privada do arquivo JSON da Service Account
-- A chave privada deve estar entre aspas e com `\n` para quebras de linha
-
-**Exemplo de como extrair as informações do arquivo JSON:**
-```json
-{
-  "project_id": "meu-projeto-123",
-  "client_email": "firebase-adminsdk-abc123@meu-projeto-123.iam.gserviceaccount.com",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC...\n-----END PRIVATE KEY-----\n"
-}
-```
-
-**Para o .env.local:**
-```env
-FIREBASE_PROJECT_ID=meu-projeto-123
-FIREBASE_CLIENT_EMAIL=firebase-adminsdk-abc123@meu-projeto-123.iam.gserviceaccount.com
-FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC...\n-----END PRIVATE KEY-----\n"
-```
-
-### 4. Configuração do Firestore
-
-1. No console do Firebase, vá para "Firestore Database"
-2. Crie uma coleção chamada `users` (será criada automaticamente quando o primeiro usuário for adicionado)
-3. Configure as regras de segurança conforme necessário
-
-## 🏃‍♂️ Executando o Projeto
-
-### Desenvolvimento
-
+### 5. Execute o projeto
 ```bash
 npm run dev
 ```
 
-O projeto estará disponível em `http://localhost:3000`
-
-### Build de Produção
-
-```bash
-npm run build
-npm start
-```
-
-### Linting e Formatação
-
-```bash
-# Verificar problemas de linting
-npm run lint
-
-# Formatar código
-npm run format
-```
-
-### Configuração do Firebase
-
-```bash
-# Configurar Firebase (cria .env.local)
-npm run setup:firebase
-
-# Verificar configuração do Firebase
-npm run verify:firebase
-
-# Testar se a API está funcionando (requer servidor rodando)
-npm run test:api
-```
-
-**📖 Guia completo:** Consulte o arquivo [FIREBASE_SETUP.md](./FIREBASE_SETUP.md) para instruções detalhadas.
+Acesse [http://localhost:3000](http://localhost:3000)
 
 ## 📁 Estrutura do Projeto
 
 ```
 lpfacil2/
-├── app/
-│   ├── api/
-│   │   └── users/
-│   │       └── route.ts          # API para gerenciar usuários
-│   ├── components/
-│   │   ├── UserForm.tsx          # Formulário para adicionar usuários
-│   │   └── UserList.tsx          # Lista de usuários
-│   ├── demo/
-│   │   └── page.tsx              # Página de demonstração
-│   ├── globals.css               # Estilos globais
-│   ├── layout.tsx                # Layout raiz
-│   └── page.tsx                  # Página principal (Landing Page)
-├── lib/
-│   └── firebaseConfig.ts         # Configuração do Firebase
-├── package.json
-├── tailwind.config.js
-├── tsconfig.json
-├── README.md
-├── CHANGELOG.md                  # Histórico de alterações
-└── test-api.js                   # Script de teste da API
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   │   ├── auth/          # Autenticação
+│   │   ├── landing-pages/ # Landing Pages API
+│   │   └── users/         # Usuários API
+│   ├── components/        # Componentes React
+│   ├── dashboard/         # Dashboard do usuário
+│   ├── editor/           # Editor de landing pages
+│   ├── login/            # Página de login
+│   ├── signup/           # Página de cadastro
+│   ├── templates/        # Seleção de templates
+│   └── globals.css       # Estilos globais
+├── lib/                  # Utilitários
+│   ├── auth.ts           # Autenticação
+│   └── firebaseConfig.ts # Configuração Firebase
+├── middleware.ts         # Middleware Next.js
+├── CHANGELOG.md         # Histórico de mudanças
+└── README.md            # Este arquivo
 ```
 
-## 🔌 API Endpoints
+## 🔧 Scripts Disponíveis
 
-### GET /api/users
-Retorna a lista de todos os usuários.
-
-**Resposta:**
-```json
-[
-  {
-    "id": "user-id",
-    "name": "João Silva",
-    "email": "joao@example.com",
-    "age": 25,
-    "createdAt": "2024-01-01T00:00:00.000Z"
-  }
-]
+```bash
+npm run dev          # Desenvolvimento
+npm run build        # Build de produção
+npm run start        # Servidor de produção
+npm run lint         # Verificar código
+npm run format       # Formatar código
+npm run test:api     # Testar APIs
+npm run test:login   # Testar autenticação
+npm run setup:firebase # Configurar Firebase
 ```
 
-### POST /api/users
-Cria um novo usuário.
+## 🎯 Funcionalidades Principais
 
-**Corpo da requisição:**
-```json
-{
-  "name": "João Silva",
-  "email": "joao@example.com",
-  "age": 25
-}
-```
+### **Sistema de Autenticação**
+- Login/Logout com sessões seguras
+- Cadastro de novos usuários
+- Verificação de autenticação em todas as rotas
+- Redirecionamento automático
 
-**Resposta:**
-```json
-{
-  "id": "user-id",
-  "name": "João Silva",
-  "email": "joao@example.com",
-  "age": 25,
-  "createdAt": "2024-01-01T00:00:00.000Z"
-}
-```
+### **Dashboard Multi-Tenant**
+- Cada usuário vê apenas suas landing pages
+- Estatísticas personalizadas
+- Ações completas de gerenciamento
+- Interface responsiva
 
-## 🚀 Deploy no Vercel
+### **Editor de Landing Pages**
+- Seleção de templates
+- Configuração de título
+- Preview em tempo real
+- Modo de edição para páginas existentes
 
-1. Conecte seu repositório ao Vercel
-2. Configure as variáveis de ambiente no painel do Vercel:
-   - `FIREBASE_PROJECT_ID`
-   - `FIREBASE_CLIENT_EMAIL`
-   - `FIREBASE_PRIVATE_KEY`
-   - `NEXTAUTH_URL`
-   - `NEXTAUTH_SECRET`
-3. Deploy automático será feito a cada push
+### **Sistema de Templates**
+- 8 categorias diferentes
+- Filtros e busca
+- Preview de recursos
+- Design moderno
 
 ## 🔒 Segurança
 
-- As credenciais do Firebase são armazenadas como variáveis de ambiente
-- Nunca commite o arquivo `.env.local` no repositório
-- Use Service Accounts com permissões mínimas necessárias
-- Configure regras de segurança adequadas no Firestore
+- **Multi-Tenant**: Isolamento completo de dados
+- **Autenticação**: Sessões seguras com cookies
+- **Autorização**: Verificação de propriedade
+- **Proteção**: Middleware em todas as rotas
+- **Validação**: Dados validados em todas as APIs
 
-## 🛠️ Funcionalidades
+## 📊 APIs Disponíveis
 
-### Landing Page Principal
-- ✅ Home moderna e elegante no estilo SaaS
-- ✅ Hero section com call-to-action impactante
-- ✅ Seção de recursos com ícones profissionais
-- ✅ Social proof com logos de empresas
-- ✅ Depoimentos de clientes com avaliações
-- ✅ Planos de preços com destaque para o mais popular
-- ✅ Footer completo e organizado
-- ✅ Menu responsivo para mobile
-- ✅ Design totalmente responsivo
+### **Autenticação**
+- `POST /api/auth/login` - Login de usuário
+- `POST /api/auth/logout` - Logout de usuário
+- `GET /api/auth/verify` - Verificar sessão
 
-### Página de Demonstração
-- ✅ Editor visual de landing pages
-- ✅ Templates categorizados e organizados
-- ✅ Preview em tempo real (desktop e mobile)
-- ✅ Editor de conteúdo em tempo real
-- ✅ Personalização de design
-- ✅ Interface intuitiva e profissional
+### **Landing Pages**
+- `GET /api/landing-pages` - Listar (filtrado por usuário)
+- `POST /api/landing-pages` - Criar nova
+- `PUT /api/landing-pages/[id]` - Atualizar
+- `DELETE /api/landing-pages/[id]` - Excluir
 
-### Sistema Backend
-- ✅ API REST completa
-- ✅ Integração com Firestore
-- ✅ Configuração segura via variáveis de ambiente
-- ✅ TypeScript para type safety
-- ✅ Tratamento de erros robusto
+### **Usuários**
+- `GET /api/users` - Listar usuários
+- `POST /api/users` - Criar usuário
+
+## 🚀 Deploy
+
+### **Vercel (Recomendado)**
+1. Conecte seu repositório ao Vercel
+2. Configure as variáveis de ambiente
+3. Deploy automático a cada push
+
+### **Outras Plataformas**
+- Netlify
+- Railway
+- Heroku
 
 ## 🤝 Contribuindo
 
@@ -262,13 +186,23 @@ Cria um novo usuário.
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📋 Documentação
+## 📝 Licença
 
-- [README.md](./README.md) - Este arquivo com instruções completas
-- [CHANGELOG.md](./CHANGELOG.md) - Histórico detalhado de todas as alterações
-- [env.example](./env.example) - Exemplo de variáveis de ambiente
-- [firebase-service-account-example.json](./firebase-service-account-example.json) - Exemplo de configuração do Firebase
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 📄 Licença
+## 📞 Suporte
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+- **Documentação**: Veja [`FIREBASE_SETUP.md`](./FIREBASE_SETUP.md)
+- **Issues**: Abra uma issue no GitHub
+- **Email**: seu-email@exemplo.com
+
+## 🎉 Agradecimentos
+
+- Next.js Team
+- Tailwind CSS
+- Firebase
+- Vercel
+
+---
+
+**LPFácil2** - Transforme visitantes em clientes com landing pages profissionais! 🚀
