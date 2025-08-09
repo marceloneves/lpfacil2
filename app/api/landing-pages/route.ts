@@ -104,6 +104,20 @@ export async function POST(request: NextRequest) {
     // Seções padrão para uma nova landing page
     const defaultSections = [
       {
+        type: 'menu',
+        visible: true,
+        content: {
+          logo: 'LPFácil',
+          items: [
+            { label: 'Início', href: '#section-0' }
+          ],
+          ctaButton: {
+            text: 'Começar Grátis',
+            href: '#hero'
+          }
+        }
+      },
+      {
         type: 'hero',
         visible: true,
         content: {
@@ -113,10 +127,136 @@ export async function POST(request: NextRequest) {
         }
       },
       {
+        type: 'problem-solution',
+        visible: true,
+        content: {
+          title: 'Você está cansado de perder vendas?',
+          subtitle: 'Sabemos exatamente como você se sente',
+          showTransformation: true,
+          problemBoxColor: '#3b82f6',
+          solutionBoxColor: '#3b82f6',
+          transformationBoxColor: '#3b82f6',
+          transformationTitle: 'A Transformação',
+          problemIcon: '😰',
+          solutionIcon: '✨',
+          transformationBeforeIcon: '😔',
+          transformationAfterIcon: '🎉',
+          problem: {
+            title: 'O Problema',
+            description: 'Você trabalha duro criando conteúdo e produtos incríveis, mas suas landing pages não convertem. Visitantes chegam, olham rapidamente e vão embora sem comprar.',
+            painPoints: [
+              'Perda de clientes potenciais todos os dias',
+              'Investimento em tráfego sem retorno',
+              'Frustração com baixas conversões',
+              'Concorrência capturando seus clientes'
+            ]
+          },
+          solution: {
+            title: 'A Solução',
+            description: 'Nossa plataforma transforma visitantes em clientes com landing pages otimizadas e testadas. Templates profissionais que realmente convertem.',
+            benefits: [
+              'Aumento de 300% nas conversões',
+              'ROI positivo em 30 dias',
+              'Confiança nos seus resultados',
+              'Vantagem competitiva garantida'
+            ]
+          },
+          transformation: {
+            before: 'Sem nossa solução: Baixas conversões, dinheiro desperdiçado, frustração constante',
+            after: 'Com nossa solução: Altas conversões, ROI positivo, crescimento sustentável'
+          }
+        }
+      },
+      {
+        type: 'value-proposition',
+        visible: true,
+        content: {
+          title: 'Por que escolher nossa solução?',
+          subtitle: 'Principais benefícios que fazem a diferença',
+          benefits: [
+            { title: 'Economia de Tempo', description: 'Crie landing pages profissionais em minutos, não horas', icon: '⏰' },
+            { title: 'Resultados Comprovados', description: 'Aumente suas conversões em até 300% com nossos templates', icon: '📈' },
+            { title: 'Sem Conhecimento Técnico', description: 'Interface intuitiva que qualquer pessoa pode usar', icon: '🎯' },
+            { title: 'Suporte Completo', description: 'Equipe especializada pronta para ajudar você', icon: '🤝' }
+          ]
+        }
+      },
+      {
+        type: 'key-benefits',
+        visible: true,
+        content: {
+          title: 'Resultados que Realmente Importam',
+          subtitle: 'Dados reais de quem já transformou seu negócio',
+          keyBenefits: [
+            {
+              metric: '300%',
+              label: 'Aumento nas Conversões',
+              description: 'Clientes relatam aumento médio de 300% nas vendas após usar nossa plataforma',
+              icon: '📈',
+              timeframe: 'em 30 dias'
+            },
+            {
+              metric: 'R$ 50k',
+              label: 'Faturamento Extra por Mês',
+              description: 'Receita adicional média gerada pelos nossos clientes mensalmente',
+              icon: '💰',
+              timeframe: 'por mês'
+            },
+            {
+              metric: '89%',
+              label: 'Redução no CAC',
+              description: 'Diminuição no custo de aquisição de clientes com páginas otimizadas',
+              icon: '🎯',
+              timeframe: 'imediato'
+            },
+            {
+              metric: '24h',
+              label: 'Implementação Completa',
+              description: 'Tempo médio para ter sua primeira landing page convertendo clientes',
+              icon: '⚡',
+              timeframe: 'setup inicial'
+            }
+          ],
+          footerText: 'Estes são apenas alguns dos resultados que nossos clientes alcançaram.\nE você pode ser o próximo!',
+          ctaText: 'Quero Estes Resultados Também'
+        }
+      },
+              {
+          type: 'demo',
+          visible: true,
+          content: {
+            title: 'Veja Como É Simples',
+            subtitle: 'Em apenas 3 passos você já tem sua landing page convertendo',
+            videoUrl: 'https://youtu.be/exemplo ou https://vimeo.com/exemplo',
+            videoThumbnail: '🎬',
+            buttonText: 'Começar Agora - É Simples Assim!',
+            steps: [
+              {
+                step: '1',
+                title: 'Escolha seu Template',
+                description: 'Selecione um dos nossos templates otimizados e personalize com suas cores e textos',
+                icon: '🎨'
+              },
+              {
+                step: '2',
+                title: 'Edite Visualmente',
+                description: 'Clique diretamente no que quer alterar. Sem código, sem complicação',
+                icon: '✏️'
+              },
+              {
+                step: '3',
+                title: 'Publique e Converta',
+                description: 'Com um clique sua página está no ar, pronta para gerar vendas',
+                icon: '🚀'
+              }
+            ]
+          }
+        },
+      {
         type: 'features',
         visible: true,
         content: {
-          title: 'Funcionalidades Principais',
+          title: 'Principais Funcionalidades',
           items: [
             { title: 'Editor Visual', description: 'Edite diretamente clicando nas seções', icon: '🎨' },
             { title: 'Preview em Tempo Real', description: 'Veja as mudanças instantaneamente', icon: '👁️' },
@@ -136,21 +276,24 @@ export async function POST(request: NextRequest) {
               price: 'R$ 29',
               period: '/mês',
               features: ['5 Landing Pages', 'Analytics Básico', 'Suporte por Email'],
-              highlight: false
+              highlight: false,
+              icon: '🌱'
             },
             {
               name: 'Pro',
               price: 'R$ 79',
               period: '/mês',
               features: ['Landing Pages Ilimitadas', 'Analytics Avançado', 'A/B Testing', 'Suporte Prioritário'],
-              highlight: true
+              highlight: true,
+              icon: '🚀'
             },
             {
               name: 'Enterprise',
               price: 'R$ 199',
               period: '/mês',
               features: ['Tudo do Pro', 'White Label', 'API Access', 'Suporte Dedicado'],
-              highlight: false
+              highlight: false,
+              icon: '👑'
             }
           ]
         }
@@ -189,6 +332,7 @@ export async function POST(request: NextRequest) {
         content: {
           title: 'Perguntas Frequentes',
           subtitle: 'Tire suas dúvidas sobre nossa plataforma',
+          maxQuestions: 10,
           faqs: [
             {
               question: 'Como funciona o período de teste?',
@@ -234,6 +378,45 @@ export async function POST(request: NextRequest) {
         }
       },
       {
+        type: 'impact-message',
+        visible: true,
+        content: {
+          title: 'Não Deixe Suas Vendas Escaparem Por Mais Um Dia',
+          subtitle: 'Cada minuto que você espera, são clientes indo para a concorrência',
+          highlightText: 'Sua concorrência já está usando landing pages profissionais',
+          motivationalText: 'Enquanto você pensa, eles faturam',
+          urgencyText: 'O momento é AGORA',
+          impactStats: [
+            { label: 'Clientes perdidos hoje', value: '47', unit: 'leads' },
+            { label: 'Faturamento perdido', value: 'R$ 12k', unit: 'hoje' },
+            { label: 'Dias sem otimização', value: '∞', unit: 'prejuízo' }
+          ]
+        }
+      },
+      {
+        type: 'final-cta',
+        visible: true,
+        content: {
+          title: 'Garanta Sua Transformação Agora',
+          subtitle: 'Tudo que você precisa para ter landing pages que realmente convertem',
+          offerTitle: 'Oferta Completa - LPFácil Pro',
+          offerFeatures: [
+            'Templates profissionais otimizados',
+            'Editor visual sem código',
+            'Analytics e métricas detalhadas',
+            'Suporte especializado',
+            'Garantia de 30 dias'
+          ],
+          originalPrice: 'R$ 297',
+          currentPrice: 'R$ 97',
+          discount: '67% OFF',
+          buttonText: 'Começar Minha Transformação Agora',
+          motivationalPhrase: 'Comece hoje e veja resultados em 24h',
+          urgencyText: 'Oferta por tempo limitado',
+          guaranteeText: '30 dias de garantia total'
+        }
+      },
+      {
         type: 'cta',
         visible: false,
         content: {
@@ -250,17 +433,73 @@ export async function POST(request: NextRequest) {
           subtitle: 'Fale conosco e tire suas dúvidas',
           email: 'contato@lpfacil.com',
           phone: '+55 (11) 99999-9999',
-          address: 'São Paulo, SP - Brasil'
+          address: 'São Paulo, SP - Brasil',
+          showEmail: true,
+          showPhone: true,
+          showAddress: true
+        }
+      },
+      {
+        type: 'footer',
+        visible: true,
+        content: {
+          companyName: 'LPFácil',
+          description: 'Criando landing pages que realmente convertem',
+          email: 'contato@lpfacil.com',
+          phone: '+55 (11) 99999-9999',
+          address: 'São Paulo, SP - Brasil',
+          socialLinks: [
+            { name: 'Facebook', url: 'https://facebook.com', icon: '📘' },
+            { name: 'Instagram', url: 'https://instagram.com', icon: '📷' },
+            { name: 'LinkedIn', url: 'https://linkedin.com', icon: '💼' },
+            { name: 'Twitter', url: 'https://twitter.com', icon: '🐦' }
+          ],
+          footerLinks: [
+            { name: 'Política de Privacidade', url: '/privacidade' },
+            { name: 'Termos de Uso', url: '/termos' },
+            { name: 'Suporte', url: '/suporte' }
+          ],
+          copyright: '© 2024 LPFácil. Todos os direitos reservados.'
         }
       }
     ];
+
+    // Inicializar cores padrão: preto para texto, azul para destaque, cinza/branco para fundo
+    const sectionsToUse = sections && sections.length > 0 ? sections : defaultSections;
+    const defaultSectionColors: {[key: number]: {bg: string, text: string, accent: string}} = {};
+    
+    sectionsToUse.forEach((section, index) => {
+      // Seção footer deve ter fundo preto
+      if (section.type === 'footer') {
+        defaultSectionColors[index] = {
+          bg: '#000000',      // Preto para footer
+          text: '#ffffff',    // Branco para texto no footer
+          accent: '#f97316'   // Laranja para destaque no footer
+        };
+      } else if (index % 2 === 0) {
+        // Seções pares: fundo branco
+        defaultSectionColors[index] = {
+          bg: '#ffffff',      // Branco
+          text: '#000000',    // Preto  
+          accent: '#3b82f6'   // Azul
+        };
+      } else {
+        // Seções ímpares: fundo cinza claro
+        defaultSectionColors[index] = {
+          bg: '#f9fafb',      // Cinza muito claro
+          text: '#000000',    // Preto
+          accent: '#3b82f6'   // Azul
+        };
+      }
+    });
 
     const landingPageData = {
       title,
       slug,
       userId: user!.id, // Usar ID do usuário autenticado
       template: template || 'default',
-      sections: sections && sections.length > 0 ? sections : defaultSections,
+      sections: sectionsToUse,
+      sectionColors: defaultSectionColors,
       settings: settings || {},
       status: status || 'draft',
       views: 0,
