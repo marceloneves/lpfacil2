@@ -2,6 +2,47 @@
 
 Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
+## [1.13.0] - 2024-01-XX
+
+### 📚 Adicionado
+- **Sistema de Wiki/Ajuda Completo**
+  - Central de ajuda com interface moderna
+  - 6 categorias organizadas (Primeiros Passos, Templates, Editor, etc.)
+  - 6 artigos detalhados com conteúdo em Markdown
+  - Sistema de busca em tempo real
+  - API completa para gerenciar artigos (`/api/help`)
+
+### 🔍 Funcionalidades da Wiki
+- **Navegação Intuitiva**
+  - Categorias com ícones e descrições
+  - Artigos populares destacados
+  - Tempo de leitura estimado
+  - Tags para categorização
+  - Breadcrumb e navegação fácil
+
+### 🎨 Interface Moderna
+- **Componente HelpSystem**
+  - Design responsivo e profissional
+  - Renderização de Markdown com estilos customizados
+  - Estados de loading e empty state
+  - Busca instantânea com feedback visual
+  - Navegação fluida entre artigos e categorias
+
+### 📖 Conteúdo Completo
+- **Artigos Detalhados**
+  - Guia de boas-vindas e primeiros passos
+  - Documentação completa de templates
+  - Instruções do editor e dashboard
+  - Guia de edição de perfil
+  - Solução de problemas comuns
+
+### 🧪 Testes
+- **Script de Teste da Wiki**
+  - `npm run test:help` - Testa todas as APIs
+  - Validação de categorias e busca
+  - Teste de artigos individuais
+  - Validação de casos de erro
+
 ## [1.12.0] - 2024-01-XX
 
 ### 👤 Adicionado

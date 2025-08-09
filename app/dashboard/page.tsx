@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/app/hooks/useAuth';
 import ProfileSection from '@/app/components/ProfileSection';
+import HelpSystem from '@/app/components/HelpSystem';
 
 interface LandingPage {
   id: string;
@@ -399,9 +400,8 @@ export default function DashboardPage() {
             )}
 
             {activeTab === 'help' && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Central de Ajuda</h2>
-                <p className="text-gray-600">Funcionalidade em desenvolvimento...</p>
+              <div className="h-[calc(100vh-200px)]">
+                <HelpSystem />
               </div>
             )}
           </div>
