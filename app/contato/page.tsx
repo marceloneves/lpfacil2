@@ -389,10 +389,10 @@ export default function ContatoPage() {
               Começar Grátis
             </Link>
             <Link 
-              href="/templates"
+              href="/dashboard"
               className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
             >
-              Ver Templates
+              Começar Agora
             </Link>
           </div>
         </div>
@@ -428,7 +428,7 @@ export default function ContatoPage() {
               <ul className="space-y-2">
                 <li><a href="/#features" className="text-gray-300 hover:text-white">Recursos</a></li>
                 <li><a href="/#pricing" className="text-gray-300 hover:text-white">Preços</a></li>
-                <li><Link href="/templates" className="text-gray-300 hover:text-white">Templates</Link></li>
+
                 <li><a href="/#faq" className="text-gray-300 hover:text-white">FAQ</a></li>
               </ul>
             </div>

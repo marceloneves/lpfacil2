@@ -474,7 +474,7 @@ export default function BlogArticlePage() {
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/#features" className="hover:text-white transition-colors">Recursos</Link></li>
                 <li><Link href="/#pricing" className="hover:text-white transition-colors">Preços</Link></li>
-                <li><Link href="/templates" className="hover:text-white transition-colors">Templates</Link></li>
+
                 <li><a href="#" className="hover:text-white transition-colors">Integrações</a></li>
               </ul>
             </div>

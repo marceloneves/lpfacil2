@@ -55,22 +55,28 @@ export default function EditorHybrid() {
     },
     {
       type: 'testimonials',
-      visible: false,
+      visible: true,
       content: {
         title: 'O que nossos clientes dizem',
         subtitle: 'Depoimentos reais de quem já usa nossa plataforma',
-        items: [
+        testimonials: [
           {
             name: 'Maria Silva',
             role: 'CEO, Tech Startup',
-            content: 'Conseguimos aumentar nossa conversão em 300% usando esta plataforma.',
-            avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face'
+            comment: 'Conseguimos aumentar nossa conversão em 300% usando esta plataforma. Ferramenta incrível!',
+            avatar: '👩‍💼'
           },
           {
             name: 'João Santos',
             role: 'Marketing Manager',
-            content: 'Interface intuitiva e resultados impressionantes. Recomendo!',
-            avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+            comment: 'Interface intuitiva e resultados impressionantes. Recomendo para todas as empresas!',
+            avatar: '👨‍💻'
+          },
+          {
+            name: 'Ana Costa',
+            role: 'Diretora Comercial',
+            comment: 'Em apenas 30 dias triplicamos nossos leads. Investimento que se paga sozinho!',
+            avatar: '👩‍🚀'
           }
         ]
       }
@@ -117,11 +123,11 @@ export default function EditorHybrid() {
     },
     {
       type: 'faq',
-      visible: false,
+      visible: true,
       content: {
         title: 'Perguntas Frequentes',
         subtitle: 'Tire suas dúvidas sobre nossa plataforma',
-        items: [
+        faqs: [
           {
             question: 'Como funciona o período de teste?',
             answer: 'Você tem 14 dias grátis para testar todas as funcionalidades da plataforma sem compromisso.'
@@ -133,6 +139,34 @@ export default function EditorHybrid() {
           {
             question: 'Vocês oferecem suporte técnico?',
             answer: 'Sim, oferecemos suporte por email, chat e telefone dependendo do seu plano.'
+          },
+          {
+            question: 'Quais são os métodos de pagamento aceitos?',
+            answer: 'Aceitamos cartão de crédito, débito, PIX, boleto bancário e transferência bancária.'
+          },
+          {
+            question: 'Posso personalizar minha landing page?',
+            answer: 'Sim! Nossa plataforma oferece total personalização de cores, textos, imagens e layout.'
+          },
+          {
+            question: 'A plataforma é responsiva para mobile?',
+            answer: 'Absolutamente! Todas as landing pages são 100% responsivas e otimizadas para dispositivos móveis.'
+          },
+          {
+            question: 'Vocês oferecem analytics e relatórios?',
+            answer: 'Sim, fornecemos dashboard completo com métricas de conversão, visitantes e performance.'
+          },
+          {
+            question: 'Posso integrar com outras ferramentas?',
+            answer: 'Oferecemos integrações com CRM, email marketing, analytics e diversas outras ferramentas populares.'
+          },
+          {
+            question: 'Há limite de páginas que posso criar?',
+            answer: 'Depende do seu plano. O plano básico permite até 5 páginas, os demais são ilimitados.'
+          },
+          {
+            question: 'Como funciona o backup dos meus dados?',
+            answer: 'Fazemos backup automático diário de todos os seus dados e mantemos histórico de 30 dias.'
           }
         ]
       }
@@ -150,7 +184,7 @@ export default function EditorHybrid() {
     }
   ]);
   const [activeSection, setActiveSection] = useState(0);
-  const [editingField, setEditingField] = useState<{sectionIndex: number, field: string, subIndex?: number} | null>(null);
+  const [editingField, setEditingField] = useState<{sectionIndex: number, field: string, subIndex?: number, subField?: string} | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [colorModalOpen, setColorModalOpen] = useState(false);
@@ -274,8 +308,8 @@ export default function EditorHybrid() {
     setDragOverIndex(null);
   };
 
-  const startInlineEdit = (sectionIndex: number, field: string, subIndex?: number) => {
-    setEditingField({ sectionIndex, field, subIndex });
+  const startInlineEdit = (sectionIndex: number, field: string, subIndex?: number, subField?: string) => {
+    setEditingField({ sectionIndex, field, subIndex, subField });
   };
 
   const finishInlineEdit = () => {
@@ -302,11 +336,79 @@ export default function EditorHybrid() {
           plans[subIndex] = { ...plans[subIndex], [subField]: value };
         }
         updatedSections[sectionIndex].content.plans = plans;
-      } else if (field === 'testimonials' && updatedSections[sectionIndex].content.testimonials) {
+      } else if (field === 'testimonials') {
+        // Inicializar testimonials se não existir
+        if (!updatedSections[sectionIndex].content.testimonials) {
+          updatedSections[sectionIndex].content.testimonials = [
+            {
+              name: 'Maria Silva',
+              role: 'CEO, Tech Startup',
+              comment: 'Conseguimos aumentar nossa conversão em 300% usando esta plataforma. Ferramenta incrível!',
+              avatar: '👩‍💼'
+            },
+            {
+              name: 'João Santos',
+              role: 'Marketing Manager',
+              comment: 'Interface intuitiva e resultados impressionantes. Recomendo para todas as empresas!',
+              avatar: '👨‍💻'
+            },
+            {
+              name: 'Ana Costa',
+              role: 'Diretora Comercial',
+              comment: 'Em apenas 30 dias triplicamos nossos leads. Investimento que se paga sozinho!',
+              avatar: '👩‍🚀'
+            }
+          ];
+        }
         const testimonials = [...updatedSections[sectionIndex].content.testimonials];
         testimonials[subIndex] = { ...testimonials[subIndex], [subField]: value };
         updatedSections[sectionIndex].content.testimonials = testimonials;
-      } else if (field === 'faqs' && updatedSections[sectionIndex].content.faqs) {
+      } else if (field === 'faqs') {
+        // Inicializar FAQs se não existir
+        if (!updatedSections[sectionIndex].content.faqs) {
+          updatedSections[sectionIndex].content.faqs = [
+            {
+              question: 'Como funciona o período de teste?',
+              answer: 'Você tem 14 dias grátis para testar todas as funcionalidades da plataforma sem compromisso.'
+            },
+            {
+              question: 'Posso cancelar a qualquer momento?',
+              answer: 'Sim, você pode cancelar sua assinatura a qualquer momento sem taxas de cancelamento.'
+            },
+            {
+              question: 'Vocês oferecem suporte técnico?',
+              answer: 'Sim, oferecemos suporte por email, chat e telefone dependendo do seu plano.'
+            },
+            {
+              question: 'Quais são os métodos de pagamento aceitos?',
+              answer: 'Aceitamos cartão de crédito, débito, PIX, boleto bancário e transferência bancária.'
+            },
+            {
+              question: 'Posso personalizar minha landing page?',
+              answer: 'Sim! Nossa plataforma oferece total personalização de cores, textos, imagens e layout.'
+            },
+            {
+              question: 'A plataforma é responsiva para mobile?',
+              answer: 'Absolutamente! Todas as landing pages são 100% responsivas e otimizadas para dispositivos móveis.'
+            },
+            {
+              question: 'Vocês oferecem analytics e relatórios?',
+              answer: 'Sim, fornecemos dashboard completo com métricas de conversão, visitantes e performance.'
+            },
+            {
+              question: 'Posso integrar com outras ferramentas?',
+              answer: 'Oferecemos integrações com CRM, email marketing, analytics e diversas outras ferramentas populares.'
+            },
+            {
+              question: 'Há limite de páginas que posso criar?',
+              answer: 'Depende do seu plano. O plano básico permite até 5 páginas, os demais são ilimitados.'
+            },
+            {
+              question: 'Como funciona o backup dos meus dados?',
+              answer: 'Fazemos backup automático diário de todos os seus dados e mantemos histórico de 30 dias.'
+            }
+          ];
+        }
         const faqs = [...updatedSections[sectionIndex].content.faqs];
         faqs[subIndex] = { ...faqs[subIndex], [subField]: value };
         updatedSections[sectionIndex].content.faqs = faqs;
@@ -353,11 +455,12 @@ export default function EditorHybrid() {
   }) => {
     const isEditing = editingField?.sectionIndex === sectionIndex && 
                      editingField?.field === field && 
-                     editingField?.subIndex === subIndex;
+                     editingField?.subIndex === subIndex &&
+                     editingField?.subField === subField;
 
     const handleClick = () => {
       if (!isEditing) {
-        startInlineEdit(sectionIndex, field, subIndex);
+        startInlineEdit(sectionIndex, field, subIndex, subField);
       }
     };
 
@@ -1195,7 +1298,26 @@ export default function EditorHybrid() {
                       </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {section.content.testimonials?.map((testimonial: any, i: number) => (
+                      {(section.content.testimonials || [
+                        {
+                          name: 'Maria Silva',
+                          role: 'CEO, Tech Startup',
+                          comment: 'Conseguimos aumentar nossa conversão em 300% usando esta plataforma. Ferramenta incrível!',
+                          avatar: '👩‍💼'
+                        },
+                        {
+                          name: 'João Santos',
+                          role: 'Marketing Manager',
+                          comment: 'Interface intuitiva e resultados impressionantes. Recomendo para todas as empresas!',
+                          avatar: '👨‍💻'
+                        },
+                        {
+                          name: 'Ana Costa',
+                          role: 'Diretora Comercial',
+                          comment: 'Em apenas 30 dias triplicamos nossos leads. Investimento que se paga sozinho!',
+                          avatar: '👩‍🚀'
+                        }
+                      ]).map((testimonial: any, i: number) => (
                         <div key={i} className="bg-gray-50 rounded-lg p-6">
                           <div className="flex items-center mb-4">
                             <div className="flex text-yellow-400">
@@ -1289,7 +1411,48 @@ export default function EditorHybrid() {
                       </p>
                     </div>
                     <div className="space-y-4">
-                      {section.content.faqs?.map((faq: any, i: number) => (
+                      {(section.content.faqs || [
+                        {
+                          question: 'Como funciona o período de teste?',
+                          answer: 'Você tem 14 dias grátis para testar todas as funcionalidades da plataforma sem compromisso.'
+                        },
+                        {
+                          question: 'Posso cancelar a qualquer momento?',
+                          answer: 'Sim, você pode cancelar sua assinatura a qualquer momento sem taxas de cancelamento.'
+                        },
+                        {
+                          question: 'Vocês oferecem suporte técnico?',
+                          answer: 'Sim, oferecemos suporte por email, chat e telefone dependendo do seu plano.'
+                        },
+                        {
+                          question: 'Quais são os métodos de pagamento aceitos?',
+                          answer: 'Aceitamos cartão de crédito, débito, PIX, boleto bancário e transferência bancária.'
+                        },
+                        {
+                          question: 'Posso personalizar minha landing page?',
+                          answer: 'Sim! Nossa plataforma oferece total personalização de cores, textos, imagens e layout.'
+                        },
+                        {
+                          question: 'A plataforma é responsiva para mobile?',
+                          answer: 'Absolutamente! Todas as landing pages são 100% responsivas e otimizadas para dispositivos móveis.'
+                        },
+                        {
+                          question: 'Vocês oferecem analytics e relatórios?',
+                          answer: 'Sim, fornecemos dashboard completo com métricas de conversão, visitantes e performance.'
+                        },
+                        {
+                          question: 'Posso integrar com outras ferramentas?',
+                          answer: 'Oferecemos integrações com CRM, email marketing, analytics e diversas outras ferramentas populares.'
+                        },
+                        {
+                          question: 'Há limite de páginas que posso criar?',
+                          answer: 'Depende do seu plano. O plano básico permite até 5 páginas, os demais são ilimitados.'
+                        },
+                        {
+                          question: 'Como funciona o backup dos meus dados?',
+                          answer: 'Fazemos backup automático diário de todos os seus dados e mantemos histórico de 30 dias.'
+                        }
+                      ]).map((faq: any, i: number) => (
                         <div key={i} className="bg-white rounded-lg shadow-sm border border-gray-200">
                           <div className="p-6">
                             <h3 className="text-lg font-semibold text-gray-900 mb-3">

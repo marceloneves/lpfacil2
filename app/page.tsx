@@ -396,7 +396,7 @@ export default function HomePage() {
               <ul className="space-y-2 text-gray-400">
                 <li><a href="#" className="hover:text-white transition-colors">Recursos</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Preços</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
+
                 <li><a href="#" className="hover:text-white transition-colors">Integrações</a></li>
               </ul>
             </div>

@@ -11,7 +11,10 @@ import Logo from '@/app/components/Logo';
 interface LandingPage {
   id: string;
   title: string;
+  slug?: string;
   status: 'draft' | 'published' | 'archived';
+  published?: boolean;
+  publishedAt?: string;
   createdAt: string;
   updatedAt: string;
   views: number;
@@ -31,6 +34,13 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPageTitle, setNewPageTitle] = useState('');
+  const [newPageSlug, setNewPageSlug] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
+  const [slugError, setSlugError] = useState('');
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [pageToDelete, setPageToDelete] = useState<LandingPage | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { user, isLoading: authLoading, logout } = useAuth();
   const router = useRouter();
 
@@ -50,8 +60,118 @@ export default function DashboardPage() {
     }
   }, [authLoading]);
 
+  // Atualizar landing pages quando o usuário volta à aba/página
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && !authLoading) {
+        fetchLandingPages();
+      }
+    };
+
+    const handleFocus = () => {
+      if (!authLoading) {
+        fetchLandingPages();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [authLoading]);
+
   const handleLogout = async () => {
     await logout();
+  };
+
+  // Função para gerar slug válido a partir do título
+  const generateSlug = (title: string): string => {
+    return title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
+      .replace(/\s+/g, '-') // Substitui espaços por hífens
+      .replace(/-+/g, '-') // Remove hífens duplos
+      .replace(/^-|-$/g, ''); // Remove hífens do início e fim
+  };
+
+  // Função para validar subdomínio
+  const validateSlug = (slug: string): string | null => {
+    if (!slug) return 'Nome do subdomínio é obrigatório';
+    if (slug.length < 3) return 'Subdomínio deve ter pelo menos 3 caracteres';
+    if (slug.length > 50) return 'Subdomínio deve ter no máximo 50 caracteres';
+    if (!/^[a-z0-9-]+$/.test(slug)) return 'Use apenas letras minúsculas, números e hífens';
+    if (slug.startsWith('-') || slug.endsWith('-')) return 'Subdomínio não pode começar ou terminar com hífen';
+    if (slug.includes('--')) return 'Subdomínio não pode ter hífens consecutivos';
+    
+    // Palavras reservadas para subdomínios
+    const reserved = ['admin', 'api', 'www', 'blog', 'mail', 'ftp', 'localhost', 'dashboard', 'editor', 'preview', 'app', 'secure', 'login', 'signup'];
+    if (reserved.includes(slug)) return 'Este subdomínio é reservado, escolha outro';
+    
+    return null;
+  };
+
+  // Função para verificar se o slug já existe
+  const checkSlugAvailability = async (slug: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/landing-pages/check-slug?slug=${encodeURIComponent(slug)}`);
+      const data = await response.json();
+      return data.available;
+    } catch (error) {
+      console.error('Erro ao verificar disponibilidade:', error);
+      return false;
+    }
+  };
+
+  // Handler para mudança no título (gera subdomínio automaticamente)
+  const handleTitleChange = (title: string) => {
+    setNewPageTitle(title);
+    const slug = generateSlug(title);
+    setNewPageSlug(slug);
+    setSlugError('');
+    
+    if (slug) {
+      const validationError = validateSlug(slug);
+      if (validationError) {
+        setSlugError(validationError);
+      } else {
+        // Verificar disponibilidade com debounce
+        setIsCheckingSlug(true);
+        setTimeout(async () => {
+          const isAvailable = await checkSlugAvailability(slug);
+          if (!isAvailable) {
+            setSlugError('Este subdomínio já está em uso, escolha outro');
+          }
+          setIsCheckingSlug(false);
+        }, 500);
+      }
+    }
+  };
+
+  // Handler para mudança manual do subdomínio
+  const handleSlugChange = (slug: string) => {
+    const cleanSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    setNewPageSlug(cleanSlug);
+    setSlugError('');
+    
+    if (cleanSlug) {
+      const validationError = validateSlug(cleanSlug);
+      if (validationError) {
+        setSlugError(validationError);
+      } else {
+        setIsCheckingSlug(true);
+        setTimeout(async () => {
+          const isAvailable = await checkSlugAvailability(cleanSlug);
+          if (!isAvailable) {
+            setSlugError('Este subdomínio já está em uso, escolha outro');
+          }
+          setIsCheckingSlug(false);
+        }, 500);
+      }
+    }
   };
 
   const fetchLandingPages = async () => {
@@ -71,9 +191,19 @@ export default function DashboardPage() {
   };
 
   const handleCreateLandingPage = async () => {
-    if (!newPageTitle.trim()) return;
+    if (!newPageTitle.trim() || !newPageSlug.trim() || slugError || isCheckingSlug) return;
+
+    setIsCreating(true);
 
     try {
+      // Verificação final de disponibilidade do subdomínio
+      const isAvailable = await checkSlugAvailability(newPageSlug);
+      if (!isAvailable) {
+        setSlugError('Este subdomínio já está em uso, escolha outro');
+        setIsCreating(false);
+        return;
+      }
+
       const response = await fetch('/api/landing-pages', {
         method: 'POST',
         headers: {
@@ -81,6 +211,7 @@ export default function DashboardPage() {
         },
         body: JSON.stringify({
           title: newPageTitle,
+          slug: newPageSlug,
           template: 'default'
         }),
       });
@@ -88,33 +219,58 @@ export default function DashboardPage() {
       if (response.ok) {
         const newPage = await response.json();
         setLandingPages([...landingPages, newPage]);
+        
+        // Limpar formulário
         setNewPageTitle('');
+        setNewPageSlug('');
+        setSlugError('');
         setShowCreateModal(false);
+
+        // Redirecionar diretamente para o editor visual
+        router.push(`/editor?template=saas&edit=${newPage.id}&title=${encodeURIComponent(newPage.title)}`);
       } else {
-        console.error('Erro ao criar landing page');
+        const errorData = await response.json();
+        setSlugError(errorData.error || 'Erro ao criar landing page');
       }
     } catch (error) {
       console.error('Erro de conexão:', error);
+      setSlugError('Erro de conexão. Tente novamente.');
+    } finally {
+      setIsCreating(false);
     }
   };
 
-  const handleDeleteLandingPage = async (pageId: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta landing page? Esta ação não pode ser desfeita.')) {
-      return;
-    }
+  const openDeleteModal = (page: LandingPage) => {
+    setPageToDelete(page);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setPageToDelete(null);
+    setIsDeleting(false);
+  };
+
+  const confirmDeleteLandingPage = async () => {
+    if (!pageToDelete) return;
+
+    setIsDeleting(true);
 
     try {
-      const response = await fetch(`/api/landing-pages/${pageId}`, {
+      const response = await fetch(`/api/landing-pages/${pageToDelete.id}`, {
         method: 'DELETE',
       });
 
       if (response.ok) {
-        setLandingPages(landingPages.filter(page => page.id !== pageId));
+        setLandingPages(landingPages.filter(page => page.id !== pageToDelete.id));
+        closeDeleteModal();
       } else {
         console.error('Erro ao excluir landing page');
+        setIsDeleting(false);
       }
     } catch (error) {
       console.error('Erro de conexão:', error);
+      setIsDeleting(false);
     }
   };
 
@@ -126,14 +282,23 @@ export default function DashboardPage() {
     });
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (page: LandingPage) => {
+    // Determinar o status real da página considerando múltiplos campos
+    let actualStatus = 'draft';
+    
+    if (page.status === 'published' || page.published === true) {
+      actualStatus = 'published';
+    } else if (page.status === 'archived') {
+      actualStatus = 'archived';
+    }
+    
     const statusConfig = {
       draft: { label: 'Rascunho', color: 'bg-gray-100 text-gray-800' },
       published: { label: 'Publicada', color: 'bg-green-100 text-green-800' },
       archived: { label: 'Arquivada', color: 'bg-yellow-100 text-yellow-800' }
     };
     
-    const config = statusConfig[status as keyof typeof statusConfig];
+    const config = statusConfig[actualStatus as keyof typeof statusConfig];
     return (
       <span className={`px-2 py-1 rounded-full text-xs font-medium ${config.color}`}>
         {config.label}
@@ -324,7 +489,7 @@ export default function DashboardPage() {
                       Pronto para criar sua próxima landing page?
                     </h2>
                     <button 
-                      onClick={() => router.push('/templates')}
+                      onClick={() => setShowCreateModal(true)}
                       className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center mx-auto"
                     >
                       <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -361,7 +526,7 @@ export default function DashboardPage() {
                             <div className="flex-1">
                               <div className="flex items-center space-x-3">
                                 <h4 className="text-lg font-medium text-gray-900">{page.title}</h4>
-                                {getStatusBadge(page.status)}
+                                {getStatusBadge(page)}
                               </div>
                               <div className="mt-2 flex items-center space-x-6 text-sm text-gray-500">
                                 <span>Criada em {formatDate(page.createdAt)}</span>
@@ -384,7 +549,7 @@ export default function DashboardPage() {
                                 Preview
                               </button>
                               <button 
-                                onClick={() => handleDeleteLandingPage(page.id)}
+                                onClick={() => openDeleteModal(page)}
                                 className="text-red-600 hover:text-red-700 text-sm font-medium"
                               >
                                 Excluir
@@ -437,10 +602,69 @@ export default function DashboardPage() {
                   type="text"
                   id="page-title"
                   value={newPageTitle}
-                  onChange={(e) => setNewPageTitle(e.target.value)}
+                  onChange={(e) => handleTitleChange(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Ex: Campanha de Verão"
                 />
+              </div>
+
+              <div className="mb-4">
+                <label htmlFor="page-slug" className="block text-sm font-medium text-gray-700 mb-2">
+                  Nome do Subdomínio
+                  <span className="text-xs text-gray-500 ml-1">
+                    - Este será o endereço único da sua página
+                  </span>
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    id="page-slug"
+                    value={newPageSlug}
+                    onChange={(e) => handleSlugChange(e.target.value)}
+                    className={`w-full pr-32 pl-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:border-transparent ${
+                      slugError
+                        ? 'border-red-300 focus:ring-red-500'
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
+                    placeholder="minha-campanha"
+                  />
+                  <div className="absolute inset-y-0 right-12 pr-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 text-sm">.lpfacil.com</span>
+                  </div>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    {isCheckingSlug ? (
+                      <svg className="animate-spin h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                    ) : slugError ? (
+                      <svg className="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    ) : newPageSlug && !slugError ? (
+                      <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : null}
+                  </div>
+                </div>
+                {slugError && (
+                  <p className="mt-1 text-sm text-red-600">{slugError}</p>
+                )}
+                <div className="mt-2 text-xs text-gray-500">
+                  <p className="mb-2">
+                    <strong>URL Final:</strong> <span className="font-mono bg-gray-100 px-1 rounded">
+                      {newPageSlug || 'seu-nome'}.lpfacil.com
+                    </span>
+                  </p>
+                  <p><strong>Regras para subdomínio:</strong></p>
+                  <ul className="list-disc list-inside mt-1 space-y-1">
+                    <li>Apenas letras minúsculas, números e hífens</li>
+                    <li>Mínimo 3 caracteres, máximo 50</li>
+                    <li>Não pode começar ou terminar com hífen</li>
+                    <li>Deve ser único em todo o sistema</li>
+                  </ul>
+                </div>
               </div>
 
               <div className="flex justify-end space-x-3">
@@ -452,10 +676,87 @@ export default function DashboardPage() {
                 </button>
                 <button
                   onClick={handleCreateLandingPage}
-                  disabled={!newPageTitle.trim()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!newPageTitle.trim() || !newPageSlug.trim() || !!slugError || isCheckingSlug || isCreating}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                 >
-                  Criar Landing Page
+                  {isCreating ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Criando...
+                    </>
+                  ) : (
+                    'Criar Landing Page'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmação de Exclusão */}
+      {showDeleteModal && pageToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full transform transition-all">
+            <div className="p-6">
+              {/* Header do Modal */}
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                  <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* Conteúdo do Modal */}
+              <div className="text-center mb-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Excluir Landing Page
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Tem certeza que deseja excluir a landing page
+                </p>
+                <div className="bg-gray-50 rounded-lg p-3 mb-4">
+                  <p className="font-semibold text-gray-900">
+                    "{pageToDelete.title}"
+                  </p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Criada em {formatDate(pageToDelete.createdAt)}
+                  </p>
+                </div>
+                <p className="text-sm text-red-600 font-medium">
+                  ⚠️ Esta ação não pode ser desfeita!
+                </p>
+              </div>
+
+              {/* Botões de Ação */}
+              <div className="flex space-x-3">
+                <button
+                  onClick={closeDeleteModal}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={confirmDeleteLandingPage}
+                  disabled={isDeleting}
+                  className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isDeleting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Excluindo...
+                    </>
+                  ) : (
+                    'Sim, Excluir'
+                  )}
                 </button>
               </div>
             </div>
