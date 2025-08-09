@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import LoadingSpinner from './components/LoadingSpinner';
+import Logo from './components/Logo';
 import { useHydration } from './hooks/useHydration';
 
 export default function HomePage() {
@@ -116,16 +117,16 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-gray-900">LPFácil2</h1>
-              </div>
+              <Logo size="md" />
             </div>
             
             <nav className="hidden md:flex space-x-8">
+              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Início</a>
               <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">Recursos</a>
               <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">Preços</a>
               <a href="#testimonials" className="text-gray-600 hover:text-gray-900 transition-colors">Depoimentos</a>
-              <a href="#contact" className="text-gray-600 hover:text-gray-900 transition-colors">Contato</a>
+              <Link href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</Link>
+              <Link href="/contato" className="text-gray-600 hover:text-gray-900 transition-colors">Contato</Link>
             </nav>
 
             <div className="hidden md:flex items-center space-x-4">
@@ -159,10 +160,12 @@ export default function HomePage() {
         {isMenuOpen && (
           <div className="md:hidden bg-white border-t border-gray-200">
             <div className="px-2 pt-2 pb-3 space-y-1">
+              <a href="#" className="block px-3 py-2 text-gray-600 hover:text-gray-900">Início</a>
               <a href="#features" className="block px-3 py-2 text-gray-600 hover:text-gray-900">Recursos</a>
               <a href="#pricing" className="block px-3 py-2 text-gray-600 hover:text-gray-900">Preços</a>
               <a href="#testimonials" className="block px-3 py-2 text-gray-600 hover:text-gray-900">Depoimentos</a>
-              <a href="#contact" className="block px-3 py-2 text-gray-600 hover:text-gray-900">Contato</a>
+              <Link href="/blog" className="block px-3 py-2 text-gray-600 hover:text-gray-900">Blog</Link>
+              <Link href="/contato" className="block px-3 py-2 text-gray-600 hover:text-gray-900">Contato</Link>
             </div>
           </div>
         )}
@@ -382,7 +385,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">LPFácil2</h3>
+              <Logo size="sm" textColor="text-white" linkToHome={false} className="mb-4" />
               <p className="text-gray-400">
                 A plataforma mais simples e eficaz para criar landing pages que convertem.
               </p>

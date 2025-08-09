@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/app/hooks/useAuth';
 import ProfileSection from '@/app/components/ProfileSection';
 import HelpSystem from '@/app/components/HelpSystem';
+import Logo from '@/app/components/Logo';
 
 interface LandingPage {
   id: string;
@@ -164,7 +165,7 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">LPFácil2</h1>
+              <Logo size="md" />
             </div>
             <div className="flex items-center space-x-4">
               {user ? (
@@ -376,8 +377,11 @@ export default function DashboardPage() {
                               >
                                 Editar
                               </button>
-                              <button className="text-gray-600 hover:text-gray-700 text-sm font-medium">
-                                Visualizar
+                              <button 
+                                onClick={() => window.open(`/preview/${page.id}`, '_blank')}
+                                className="text-green-600 hover:text-green-700 text-sm font-medium"
+                              >
+                                Preview
                               </button>
                               <button 
                                 onClick={() => handleDeleteLandingPage(page.id)}

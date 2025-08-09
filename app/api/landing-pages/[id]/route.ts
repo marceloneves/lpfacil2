@@ -2,9 +2,55 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/firebaseConfig';
 import { getCurrentUser, requireAuth } from '@/lib/auth';
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    if (!db) {
+      return NextResponse.json(
+        { error: 'Firebase não configurado' },
+        { status: 500 }
+      );
+    }
+
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'ID da landing page é obrigatório' },
+        { status: 400 }
+      );
+    }
+
+    // Buscar landing page específica
+    const doc = await db.collection('landing-pages').doc(id).get();
+
+    if (!doc.exists) {
+      return NextResponse.json(
+        { error: 'Landing page não encontrada' },
+        { status: 404 }
+      );
+    }
+
+    const landingPage = {
+      id: doc.id,
+      ...doc.data()
+    };
+
+    return NextResponse.json(landingPage);
+  } catch (error) {
+    console.error('Erro ao buscar landing page:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!db) {
@@ -25,55 +71,50 @@ export async function PUT(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
-    const { title, template, updatedAt } = body;
 
-    if (!title) {
+    if (!id) {
       return NextResponse.json(
-        { error: 'Título é obrigatório' },
+        { error: 'ID da landing page é obrigatório' },
         { status: 400 }
       );
     }
 
     // Verificar se a landing page existe e pertence ao usuário
-    const pageRef = db.collection('landing-pages').doc(id);
-    const pageDoc = await pageRef.get();
-
-    if (!pageDoc.exists) {
+    const existingDoc = await db.collection('landing-pages').doc(id).get();
+    
+    if (!existingDoc.exists) {
       return NextResponse.json(
         { error: 'Landing page não encontrada' },
         { status: 404 }
       );
     }
 
-    const pageData = pageDoc.data();
-    
-    // Verificar se a landing page pertence ao usuário atual
-    if (pageData!.userId !== user!.id) {
+    const existingData = existingDoc.data();
+    if (existingData?.userId !== user!.id) {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
       );
     }
 
-    // Atualizar a landing page
-    const updateData: any = {
-      title,
-      updatedAt: updatedAt || new Date().toISOString(),
+    // Atualizar landing page
+    const updateData = {
+      ...body,
+      userId: user!.id, // Garantir que userId não seja alterado
+      updatedAt: new Date().toISOString(),
     };
 
-    if (template) {
-      updateData.template = template;
-    }
+    await db.collection('landing-pages').doc(id).update(updateData);
 
-    await pageRef.update(updateData);
+    const updatedDoc = await db.collection('landing-pages').doc(id).get();
+    const updatedLandingPage = {
+      id: updatedDoc.id,
+      ...updatedDoc.data()
+    };
 
-    // Buscar a landing page atualizada
-    const updatedDoc = await pageRef.get();
-    const updatedPage = { id: updatedDoc.id, ...updatedDoc.data() };
-
-    return NextResponse.json(updatedPage, { status: 200 });
+    return NextResponse.json(updatedLandingPage);
   } catch (error) {
     console.error('Erro ao atualizar landing page:', error);
     return NextResponse.json(
@@ -85,7 +126,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     if (!db) {
@@ -106,36 +147,37 @@ export async function DELETE(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'ID da landing page é obrigatório' },
+        { status: 400 }
+      );
+    }
 
     // Verificar se a landing page existe e pertence ao usuário
-    const pageRef = db.collection('landing-pages').doc(id);
-    const pageDoc = await pageRef.get();
-
-    if (!pageDoc.exists) {
+    const existingDoc = await db.collection('landing-pages').doc(id).get();
+    
+    if (!existingDoc.exists) {
       return NextResponse.json(
         { error: 'Landing page não encontrada' },
         { status: 404 }
       );
     }
 
-    const pageData = pageDoc.data();
-    
-    // Verificar se a landing page pertence ao usuário atual
-    if (pageData!.userId !== user!.id) {
+    const existingData = existingDoc.data();
+    if (existingData?.userId !== user!.id) {
       return NextResponse.json(
         { error: 'Acesso negado' },
         { status: 403 }
       );
     }
 
-    // Deletar a landing page
-    await pageRef.delete();
+    // Deletar landing page
+    await db.collection('landing-pages').doc(id).delete();
 
-    return NextResponse.json(
-      { message: 'Landing page deletada com sucesso' },
-      { status: 200 }
-    );
+    return NextResponse.json({ success: true, message: 'Landing page deletada com sucesso' });
   } catch (error) {
     console.error('Erro ao deletar landing page:', error);
     return NextResponse.json(

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Logo from '@/app/components/Logo';
 
 interface Template {
   id: string;
@@ -122,7 +123,7 @@ export default function TemplatesPage() {
                 <svg className="h-6 w-6 text-gray-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                <h1 className="text-2xl font-bold text-gray-900">LPFácil2</h1>
+                <Logo size="md" linkToHome={true} />
               </Link>
             </div>
             <div className="flex items-center space-x-4">

@@ -2,6 +2,86 @@
 
 Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
+## [1.14.0] - 2024-01-XX
+
+### 🎨 Adicionado
+- **Editor Visual Moderno e Completo**
+  - Interface de arrastar e soltar para reorganizar seções
+  - Biblioteca com 8 tipos de seções pré-definidas (Hero, Features, Testimonials, etc.)
+  - Painel de customização em tempo real para cada seção
+  - Preview instantâneo das alterações
+  - Editor dividido em 3 abas: Seções, Design e Configurações
+
+### 🧩 Seções Disponíveis
+- **Hero Sections**
+  - Hero Centralizado com CTA
+  - Hero Dividido (texto + imagem)
+- **Features**
+  - Grid de recursos com ícones
+  - Lista vertical de funcionalidades
+- **Social Proof**
+  - Cards de depoimentos com fotos
+- **Vendas & Conversão**
+  - Tabela de preços responsiva
+  - Call-to-action destacado
+- **Suporte**
+  - FAQ com accordion interativo
+  - Formulário de contato completo
+
+### 🎛️ Customização Avançada
+- **Design por Seção**
+  - Cores de fundo e texto personalizáveis
+  - Alinhamento (esquerda, centro, direita)
+  - Espaçamento customizável
+  - Sombras e efeitos visuais
+  - Visibilidade on/off por seção
+- **Conteúdo Dinâmico**
+  - Editor inline para textos
+  - Gerenciamento de itens (adicionar/remover)
+  - URLs de imagens e links
+  - Ícones e elementos visuais
+
+### 🚀 Interface do Editor
+- **Sidebar Inteligente**
+  - Biblioteca de seções organizadas por categoria
+  - Painel de customização contextual
+  - Configurações globais da página
+- **Canvas Interativo**
+  - Seleção visual de seções
+  - Controles de edição overlay
+  - Reorganização com botões up/down
+  - Preview mode toggle
+- **Toolbar Superior**
+  - Indicador de número de seções
+  - Botões de preview e salvamento
+  - Toggle entre modo edição/preview
+
+### 🔧 API e Backend
+- **Estrutura de Dados**
+  - Tipos TypeScript para seções e estilos
+  - Sistema de templates flexível
+  - Armazenamento estruturado no Firestore
+- **APIs Expandidas**
+  - GET/PUT individual por landing page
+  - Suporte completo a seções estruturadas
+  - Multi-tenant com validação de proprietário
+
+## [1.13.1] - 2024-01-XX
+
+### 🐛 Corrigido
+- **Bug do Dashboard - Landing Pages não carregavam**
+  - Removido `orderBy` da consulta Firestore que causava erro interno
+  - Firebase requer índices compostos para `where` + `orderBy`
+  - Landing pages agora carregam corretamente no dashboard
+  - Adicionado script de inicialização de dados demo (`npm run init:demo`)
+
+### 🔧 Melhorias
+- **Scripts de Demonstração**
+  - Novo script `scripts/init-demo-data.js` para dados de exemplo
+  - Comando `npm run init:demo` para configuração rápida
+  - Usuário demo: demo@lpfacil.com (senha: demo123)
+  - Landing pages de exemplo pré-criadas
+
 ## [1.13.0] - 2024-01-XX
 
 ### 📚 Adicionado

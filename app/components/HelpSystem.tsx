@@ -14,27 +14,15 @@ interface HelpArticle {
   popular: boolean;
 }
 
-interface HelpCategory {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  order: number;
-}
-
 interface HelpResponse {
   articles: HelpArticle[];
-  categories: HelpCategory[];
-  category?: HelpCategory;
   total: number;
   query?: string;
-  showing?: string;
 }
 
 export default function HelpSystem() {
   const [helpData, setHelpData] = useState<HelpResponse | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<HelpArticle | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
@@ -43,18 +31,17 @@ export default function HelpSystem() {
     loadHelpData();
   }, []);
 
-  const loadHelpData = async (category?: string, search?: string) => {
+  const loadHelpData = async (search?: string) => {
     setIsLoading(true);
     try {
       let url = '/api/help';
       const params = new URLSearchParams();
       
-      if (category) {
-        params.append('category', category);
-      } else if (search) {
+      if (search) {
         params.append('search', search);
       } else {
-        params.append('popular', 'true');
+        // Carregar todos os artigos por padrão
+        params.append('all', 'true');
       }
       
       if (params.toString()) {
@@ -65,7 +52,6 @@ export default function HelpSystem() {
       if (response.ok) {
         const data = await response.json();
         setHelpData(data);
-        setSelectedCategory(category || '');
         setSelectedArticle(null);
       }
     } catch (error) {
@@ -76,21 +62,11 @@ export default function HelpSystem() {
     }
   };
 
-  const handleCategoryClick = (categoryId: string) => {
-    if (categoryId === selectedCategory) {
-      // Se clicou na categoria já selecionada, volta para popular
-      setSelectedCategory('');
-      loadHelpData();
-    } else {
-      loadHelpData(categoryId);
-    }
-  };
-
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (query.trim()) {
       setIsSearching(true);
-      await loadHelpData(undefined, query.trim());
+      await loadHelpData(query.trim());
     } else {
       loadHelpData();
     }
@@ -116,10 +92,7 @@ export default function HelpSystem() {
     if (searchQuery && helpData?.query) {
       return `Resultados para "${helpData.query}"`;
     }
-    if (helpData?.category) {
-      return helpData.category.name;
-    }
-    return 'Artigos Populares';
+    return 'Artigos da Wiki';
   };
 
   // Visualização de artigo individual
@@ -179,13 +152,13 @@ export default function HelpSystem() {
     <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Central de Ajuda</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Wiki - Base de Conhecimento</h2>
         
         {/* Busca */}
-        <div className="relative mb-6">
+        <div className="relative">
           <input
             type="text"
-            placeholder="Buscar na central de ajuda..."
+            placeholder="Buscar artigos na wiki..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
             className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -198,30 +171,6 @@ export default function HelpSystem() {
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Categorias */}
-      <div className="mb-6">
-        <h3 className="text-md font-medium text-gray-900 mb-3">Categorias</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {helpData?.categories?.map(category => (
-            <button
-              key={category.id}
-              onClick={() => handleCategoryClick(category.id)}
-              className={`p-3 rounded-lg border text-left hover:bg-gray-50 transition-colors ${
-                selectedCategory === category.id
-                  ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                  : 'border-gray-200'
-              }`}
-            >
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="text-lg">{category.icon}</span>
-                <span className="font-medium text-gray-900 text-sm">{category.name}</span>
-              </div>
-              <p className="text-xs text-gray-600">{category.description}</p>
-            </button>
-          ))}
         </div>
       </div>
 

@@ -22,11 +22,20 @@ Uma plataforma completa e moderna para criação de landing pages profissionais,
 - Ações completas (Editar, Visualizar, Excluir)
 - Interface moderna e responsiva
 
-### ✏️ **Editor de Landing Pages**
-- Modo de criação e edição
-- Configuração de título e template
-- Preview do template selecionado
-- Integração completa com Firebase
+### ✏️ **Editor Visual Moderno**
+- **Interface Drag & Drop**: Arraste e solte seções para reorganizar
+- **8+ Tipos de Seções**: Hero, Features, Testimonials, Pricing, CTA, FAQ, Contact
+- **Customização em Tempo Real**: Cores, textos, espaçamentos e estilos
+- **Preview Instantâneo**: Veja mudanças conforme você edita
+- **Sidebar Inteligente**: Biblioteca de componentes e painel de customização
+- **Configurações Avançadas**: SEO, meta tags e configurações globais
+
+### 🧩 **Biblioteca de Seções**
+- **Hero**: Centralizado com CTA, Dividido (texto + imagem)
+- **Features**: Grid com ícones, Lista vertical de funcionalidades
+- **Social Proof**: Cards de depoimentos com fotos
+- **Vendas**: Tabela de preços responsiva, Call-to-action destacado
+- **Suporte**: FAQ com accordion, Formulário de contato
 
 ### 🛡️ **Segurança**
 - Sistema multi-tenant completo

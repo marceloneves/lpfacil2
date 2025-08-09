@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Rotas que precisam de autenticação
-  const protectedRoutes = ['/dashboard'];
+  const protectedRoutes = ['/dashboard', '/templates', '/editor'];
   
   // Rotas que não devem ser acessadas quando logado
   const authRoutes = ['/login', '/signup'];

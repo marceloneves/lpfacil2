@@ -25,7 +25,6 @@ export async function GET(request: NextRequest) {
     // Buscar apenas landing pages do usuário atual
     const snapshot = await db.collection('landing-pages')
       .where('userId', '==', user!.id)
-      .orderBy('createdAt', 'desc')
       .get();
 
     const landingPages = snapshot.docs.map((doc: any) => ({
@@ -64,7 +63,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, template } = body;
+    const { title, template, sections, settings, status } = body;
 
     // Validação básica
     if (!title) {
@@ -78,7 +77,9 @@ export async function POST(request: NextRequest) {
       title,
       userId: user!.id, // Usar ID do usuário autenticado
       template: template || 'default',
-      status: 'draft',
+      sections: sections || [],
+      settings: settings || {},
+      status: status || 'draft',
       views: 0,
       conversions: 0,
       createdAt: new Date().toISOString(),

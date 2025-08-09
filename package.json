@@ -14,7 +14,9 @@
     "test:profile": "node test-profile.js",
     "test:help": "node test-help.js",
     "setup:firebase": "node setup-firebase.js",
-    "verify:firebase": "node verify-firebase.js"
+    "verify:firebase": "node verify-firebase.js",
+    "init:demo": "node scripts/init-demo-data.js",
+    "test:editor": "node scripts/test-editor.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
