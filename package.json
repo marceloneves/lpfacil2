@@ -11,6 +11,7 @@
     "test:api": "node test-api.js",
     "test:leads": "node test-lead-capture.js",
     "test:login": "node test-login.js",
+    "test:profile": "node test-profile.js",
     "setup:firebase": "node setup-firebase.js",
     "verify:firebase": "node verify-firebase.js"
   },

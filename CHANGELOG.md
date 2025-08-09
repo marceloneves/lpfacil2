@@ -2,6 +2,38 @@
 
 Todas as alterações notáveis neste projeto serão documentadas neste arquivo.
 
+## [1.12.0] - 2024-01-XX
+
+### 👤 Adicionado
+- **Sistema de Edição de Perfil Completo**
+  - API para buscar e atualizar dados do perfil (`/api/users/profile`)
+  - Interface de edição de perfil no dashboard
+  - Alteração de senha com validação de senha atual
+  - Validação de email único no sistema
+  - Campos editáveis: nome, email, empresa, telefone
+
+### 🔐 Segurança do Perfil
+- **Validação e Proteção**
+  - Verificação de senha atual antes de alterar
+  - Validação de email único entre usuários
+  - Sanitização de dados de entrada
+  - Proteção multi-tenant em todas as operações
+
+### 🎨 Interface do Perfil
+- **Componente ProfileSection**
+  - Modo visualização e edição
+  - Seção separada para alteração de senha
+  - Feedback visual para sucesso e erros
+  - Loading states e validações em tempo real
+  - Formatação de datas em português
+
+### 🧪 Testes
+- **Script de Teste de Perfil**
+  - `npm run test:profile` - Testa APIs de perfil
+  - Validação de busca e atualização de dados
+  - Teste de alteração de senha
+  - Instruções para teste manual da interface
+
 ## [1.11.0] - 2024-01-XX
 
 ### 🔐 Adicionado
